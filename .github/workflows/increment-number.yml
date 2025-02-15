@@ -20,6 +20,7 @@ jobs:
           # Example: Append the current date to a text file
           echo "Daily Contribution on $(date)" >> daily_contribution.txt
 
+
       - name: Commit changes
         uses: EndBug/add-and-commit@v7
         with:
