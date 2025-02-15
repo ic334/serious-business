@@ -19,9 +19,6 @@ jobs:
         run: |
           # Example: Append the current date to a text file
           echo "Daily Contribution on $(date)" >> daily_contribution.txt
-          
-          # Or: Add any script or commands that make a meaningful contribution
-          # Example: Update a file with new content, modify code, etc.
 
       - name: Commit changes
         uses: EndBug/add-and-commit@v7
