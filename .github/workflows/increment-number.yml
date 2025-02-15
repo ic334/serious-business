@@ -3,6 +3,7 @@ name: Daily Contributions
 on:
   schedule:
     - cron: '0 0 * * 1-5'  # Every weekday at midnight UTC
+  workflow_dispatch:  # Manual trigger to run the workflow
 
 jobs:
   make-contribution:
