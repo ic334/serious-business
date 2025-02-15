@@ -35,10 +35,9 @@ jobs:
 
       - name: Create New Branch for Update
         run: |
-          BRANCH_NAME=$(date "+daily-contribution-%Y%m%d")  # Use full shell syntax for date
+          BRANCH_NAME="daily-contribution-$(date '+%Y%m%d')"  # Fixing how the date is handled
           echo "Branch name: $BRANCH_NAME"  # Print the branch name for debugging
           git checkout -b "$BRANCH_NAME"  # Create a new branch with the evaluated date
-
 
       - name: Commit Changes
         run: |
