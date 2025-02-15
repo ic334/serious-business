@@ -46,16 +46,16 @@ jobs:
           git config --global user.email "49622606+ic334@users.noreply.github.com"
           git remote set-url origin https://x-access-token:${PAT}@github.com/ic334/serious-business.git
 
-        # Create a temporary branch
+          # Create a temporary branch
           TEMP_BRANCH="temp-branch-$(date +%s)"  # Using a timestamp to ensure unique branch names
           git checkout -b $TEMP_BRANCH
 
-        # Add changes, commit, and push to the temporary branch
+          # Add changes, commit, and push to the temporary branch
           git add updated_file.txt
           git commit -m "Auto-update file"
           git push origin $TEMP_BRANCH
 
-        # Delete the temporary branch locally and remotely
+          # Delete the temporary branch locally and remotely
           git checkout main  # Switch back to the main branch
           git branch -D $TEMP_BRANCH  # Delete the local temp branch
           git push origin --delete $TEMP_BRANCH  # Delete the remote temp branch
