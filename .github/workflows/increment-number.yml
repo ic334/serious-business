@@ -1,0 +1,39 @@
+name: Random Time File Update  # Name of the GitHub Actions workflow
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # This schedules the job to start at midnight (UTC) every day
+
+jobs:
+  update-file:
+    runs-on: ubuntu-latest  # The workflow runs on the latest Ubuntu virtual machine
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4  # This pulls the latest version of the repository so we can modify files
+
+      - name: Generate Random Delay
+        run: echo "SLEEP_TIME=$(( RANDOM % 86400 ))" >> $GITHUB_ENV
+        # Generates a random number between 0 and 86,399 (seconds in a day)
+        # This determines how long the script will "sleep" before executing
+
+      - name: Wait Random Time
+        run: sleep $SLEEP_TIME
+        # Waits for the randomly chosen number of seconds
+        # Ensures the script runs at a different time every day
+
+      - name: Modify File
+        run: |
+          echo "Updated on $(date)" > updated_file.txt
+        # Updates the file 'updated_file.txt' with the current timestamp
+        # If the file doesn’t exist, it will be created
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add updated_file.txt
+          git commit -m "Auto-update file"
+          git push
+        # Configures Git with a bot user
+        # Adds the updated file, commits the changes, and pushes them to the repository
