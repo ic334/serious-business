@@ -11,8 +11,6 @@ on:
       - '.github/workflows/update-file.yml'  # Prevents triggering on its own changes
 
 jobs:
-
-jobs:
   update-file:
     runs-on: ubuntu-latest  # The workflow runs on the latest Ubuntu virtual machine
 
