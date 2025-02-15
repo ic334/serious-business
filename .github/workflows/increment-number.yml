@@ -19,17 +19,14 @@ jobs:
         run: |
           # Example: Append the current date to a text file
           echo "Daily Contribution on $(date)" >> daily_contribution.txt
-          
-          # Or: Add any script or commands that make a meaningful contribution
-          # Example: Update a file with new content, modify code, etc.
 
       - name: Commit changes
         uses: EndBug/add-and-commit@v7
         with:
-          author_name: "GitHub Actions"
-          author_email: "actions@github.com"
+          author_name: "Isaac Cervantes"
+          author_email: "${GH_EMAIL}"
           message: "Daily contribution"
-          add: "daily_contribution.txt"  # Replace with your own file path
+          add: "daily_contribution.txt" 
 
       - name: Push changes
         uses: ad-m/github-push-action@master
