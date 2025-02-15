@@ -4,6 +4,13 @@ on:
   schedule:
     - cron: '0 0 * * *'  # This schedules the job to start at midnight (UTC) every day
   workflow_dispatch:  # Allows manual triggering from GitHub Actions
+  push:
+    branches:
+      - main  # Ensures that it only triggers on push to the 'main' branch
+    paths-ignore:
+      - '.github/workflows/update-file.yml'  # Prevents triggering on its own changes
+
+jobs:
 
 jobs:
   update-file:
@@ -34,11 +41,14 @@ jobs:
         # If the file doesn’t exist, it will be created
 
       - name: Commit and Push Changes
+        env:
+          PAT: ${{ secrets.GH_PAT }}  # Use the secret token for authentication
         run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
+          git config --global user.name "ic334"
+          git config --global user.email "49622606+ic334@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${PAT}@github.com/ic334/serious-business.git
           git add updated_file.txt
           git commit -m "Auto-update file"
           git push
-        # Configures Git with a bot user
-        # Adds the updated file, commits the changes, and pushes them to the repository
+        # Configures Git with your GitHub username and email
+        # Adds the updated file, commits the changes, and pushes them to the repository using a Personal Access Token (PAT)
