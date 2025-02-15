@@ -43,7 +43,7 @@ jobs:
           PAT: ${{ secrets.GH_PAT }}  # Use the secret token for authentication
         run: |
           git config --global user.name "ic334"
-          git config --global user.email "49622606+ic334@users.noreply.github.com"
+          git config --global user.email "${{ secrets.GH_EMAIL }}" # Using the secret email here
           git remote set-url origin https://x-access-token:${PAT}@github.com/ic334/serious-business.git
 
           # Create a temporary branch
