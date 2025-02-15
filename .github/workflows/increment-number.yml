@@ -3,6 +3,7 @@ name: Random Time File Update  # Name of the GitHub Actions workflow
 on:
   schedule:
     - cron: '0 0 * * *'  # This schedules the job to start at midnight (UTC) every day
+  workflow_dispatch:  # Allows manual triggering from GitHub Actions
 
 jobs:
   update-file:
@@ -13,9 +14,13 @@ jobs:
         uses: actions/checkout@v4  # This pulls the latest version of the repository so we can modify files
 
       - name: Generate Random Delay
-        run: echo "SLEEP_TIME=$(( RANDOM % 86400 ))" >> $GITHUB_ENV
-        # Generates a random number between 0 and 86,399 (seconds in a day)
-        # This determines how long the script will "sleep" before executing
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "SLEEP_TIME=$(( RANDOM % 86400 ))" >> $GITHUB_ENV
+          else
+            echo "SLEEP_TIME=0" >> $GITHUB_ENV
+          fi
+        # Randomizes delay only if scheduled; runs instantly if manually triggered
 
       - name: Wait Random Time
         run: sleep $SLEEP_TIME
