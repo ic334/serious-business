@@ -1,22 +1,22 @@
-name: Random Time File Update
+name: Random Time File Update  # Name of the GitHub Actions workflow
 
 on:
   schedule:
-    - cron: '*/1 * * * *'  # Runs once every minute (GitHub's smallest allowed interval)
-  workflow_dispatch:  # Allows manual triggering
+    - cron: '0 0 * * *'  # This schedules the job to start at midnight (UTC) every day
+  workflow_dispatch:  # Allows manual triggering from GitHub Actions
   push:
     branches:
-      - main  # Only triggers on pushes to the main branch
+      - main  # Ensures that it only triggers on push to the 'main' branch
     paths-ignore:
-      - '.github/workflows/update-file.yml'  # Ignore changes to this workflow file
+      - '.github/workflows/update-file.yml'  # Prevents triggering on its own changes
 
 jobs:
   update-file:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # The workflow runs on the latest Ubuntu virtual machine
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4  # This pulls the latest version of the repository so we can modify files
 
       - name: Generate Random Delay
         run: |
@@ -25,16 +25,28 @@ jobs:
           else
             echo "SLEEP_TIME=0" >> $GITHUB_ENV
           fi
+        # Randomizes delay only if scheduled; runs instantly if manually triggered
 
-      - name: Simulate 15-second interval loop
+      - name: Wait Random Time
+        run: sleep 15
+        # Waits for the randomly chosen number of seconds
+        # Ensures the script runs at a different time every day
+
+      - name: Modify File
         run: |
-          for i in {1..4}  # Loop 4 times to simulate 15-second intervals, for 1 minute
-          do
-            echo "Updated on $(date)" > updated_file.txt
-            git config --global user.name "ic334"
-            git config --global user.email "${{ secrets.GH_EMAIL }}"
-            git add updated_file.txt
-            git commit -m "Auto-update file $(date)"
-            git push origin main
-            sleep 15  # Wait for 15 seconds before running the next iteration
-          done
+          echo "Updated on $(date)" > updated_file.txt
+        # Updates the file 'updated_file.txt' with the current timestamp
+        # If the file doesn’t exist, it will be created
+
+      - name: Commit and Push Changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Use the GitHub token for authentication
+        run: |
+          git config --global user.name "ic334"  # Ensure your username is used
+          git config --global user.email "${{ secrets.GH_EMAIL }}"  # Ensure your email is used
+          
+          # Add the changes, commit, and push directly to main
+          git add updated_file.txt
+          git commit -m "Auto-update file $(date)"  # Commit with a more meaningful message
+          git push origin main
+
