@@ -55,7 +55,16 @@ jobs:
           git commit -m "Auto-update file"
           git push origin $TEMP_BRANCH
 
+          # Switch back to the main branch
+          git checkout main
+
+          # Merge the temporary branch into the main branch
+          git merge $TEMP_BRANCH --no-ff --no-commit  # Prepare the merge, but don't commit yet
+
+          # Commit the merge and push to the main branch
+          git commit -m "Merge changes from $TEMP_BRANCH"
+          git push origin main  # Push changes to the main branch
+
           # Delete the temporary branch locally and remotely
-          git checkout main  # Switch back to the main branch
           git branch -D $TEMP_BRANCH  # Delete the local temp branch
           git push origin --delete $TEMP_BRANCH  # Delete the remote temp branch
