@@ -36,7 +36,9 @@ jobs:
       - name: Create New Branch for Update
         run: |
           BRANCH_NAME="daily-contribution-$(date +%Y%m%d)"  # Store the branch name in a variable
+          echo "Branch name: $BRANCH_NAME"  # Print the branch name for debugging
           git checkout -b "$BRANCH_NAME"  # Create a new branch with the evaluated date
+
 
       - name: Commit Changes
         run: |
@@ -49,6 +51,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Use the GitHub token for authentication
         run: |
+          echo "Pushing to branch: $BRANCH_NAME"  # Print the branch name to verify it's not empty
           git push origin "$BRANCH_NAME"  # Push the changes to the branch with the evaluated date
 
       - name: Open Pull Request (Using peter-evans)
