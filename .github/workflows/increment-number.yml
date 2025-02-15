@@ -40,31 +40,13 @@ jobs:
 
       - name: Commit and Push Changes
         env:
-          PAT: ${{ secrets.GH_PAT }}  # Use the secret token for authentication
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Use the GitHub token for authentication
         run: |
-          git config --global user.name "ic334"
-          git config --global user.email "${{ secrets.GH_EMAIL }}" # Using the secret email here
-          git remote set-url origin https://x-access-token:${PAT}@github.com/ic334/serious-business.git
-
-          # Create a temporary branch
-          TEMP_BRANCH="temp-branch-$(date +%s)"  # Using a timestamp to ensure unique branch names
-          git checkout -b $TEMP_BRANCH
-
-          # Add changes, commit, and push to the temporary branch
+          git config --global user.name "ic334"  # Ensure your username is used
+          git config --global user.email "${{ secrets.GH_EMAIL }}"  # Ensure your email is used
+          
+          # Add the changes, commit, and push directly to main
           git add updated_file.txt
-          git commit -m "Auto-update file"
-          git push origin $TEMP_BRANCH
+          git commit -m "Auto-update file $(date)"  # Commit with a more meaningful message
+          git push origin main
 
-          # Switch back to the main branch
-          git checkout main
-
-          # Merge the temporary branch into the main branch
-          git merge $TEMP_BRANCH --no-ff --no-commit  # Prepare the merge, but don't commit yet
-
-          # Commit the merge and push to the main branch
-          git commit -m "Merge changes from $TEMP_BRANCH"
-          git push origin main  # Push changes to the main branch
-
-          # Delete the temporary branch locally and remotely
-          git branch -D $TEMP_BRANCH  # Delete the local temp branch
-          git push origin --delete $TEMP_BRANCH  # Delete the remote temp branch
