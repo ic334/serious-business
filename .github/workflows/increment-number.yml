@@ -56,7 +56,7 @@ jobs:
           git push origin $TEMP_BRANCH
 
           # Switch back to the main branch
-          git checkout main  # Switch back to the main branch
+          git checkout main
 
           # Merge the temporary branch into the main branch
           git merge $TEMP_BRANCH --no-ff --no-commit  # Prepare the merge, but don't commit yet
