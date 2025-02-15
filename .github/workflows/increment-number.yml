@@ -1,66 +1,47 @@
-name: Random Time File Update  # Name of the GitHub Actions workflow
+name: Daily Contributions
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # This schedules the job to start at midnight (UTC) every day
-  workflow_dispatch:  # Allows manual triggering from GitHub Actions
+    - cron: '0 0 * * 1-5'  # Every weekday at midnight UTC
 
 jobs:
-  update-file:
-    runs-on: ubuntu-latest  # The workflow runs on the latest Ubuntu virtual machine
+  make-contribution:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4  # This pulls the latest version of the repository so we can modify files
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Fetch the full commit history
 
-      - name: Generate Random Delay
+      - name: Make daily contribution
         run: |
-          if [ "${{ github.event_name }}" = "schedule" ]; then
-            echo "SLEEP_TIME=$(( RANDOM % 86400 ))" >> $GITHUB_ENV
-          else
-            echo "SLEEP_TIME=0" >> $GITHUB_ENV
-          fi
-        # Randomizes delay only if scheduled; runs instantly if manually triggered
+          # Example: Append the current date to a text file
+          echo "Daily Contribution on $(date)" >> daily_contribution.txt
+          
+          # Or: Add any script or commands that make a meaningful contribution
+          # Example: Update a file with new content, modify code, etc.
 
-      - name: Wait Random Time
-        run: sleep 15
-        # Waits for the randomly chosen number of seconds
-        # Ensures the script runs at a different time every day
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v7
+        with:
+          author_name: "GitHub Actions"
+          author_email: "actions@github.com"
+          message: "Daily contribution"
+          add: "daily_contribution.txt"  # Replace with your own file path
 
-      - name: Modify File
-        run: |
-          echo "Updated on $(date)" > updated_file.txt
-        # Updates the file 'updated_file.txt' with the current timestamp
-        # If the file doesn’t exist, it will be created
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          branch: daily-contribution
+          github_token: ${{ secrets.GITHUB_TOKEN }}  # Use your GitHub token for authentication
 
-      - name: Create New Branch for Update
-        run: |
-          BRANCH_NAME="daily-contribution"  # Static branch name for simplicity
-          echo "Branch name: $BRANCH_NAME"  # Print the branch name for debugging
-          git checkout -b "$BRANCH_NAME"  # Create a new branch with the static name
-
-      - name: Commit Changes
-        run: |
-          git config --global user.name "ic334"  # Ensure your username is used
-          git config --global user.email "${{ secrets.GH_EMAIL }}"  # Ensure your email is used
-          git add updated_file.txt
-          git commit -m "Auto-update file $(date)"  # Commit with a more meaningful message
-
-      - name: Push Changes to New Branch
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Use the GitHub token for authentication
-        run: |
-          echo "Pushing to branch: $BRANCH_NAME"  # Print the branch name to verify it's not empty
-          git push origin "$BRANCH_NAME"  # Push the changes to the branch with the evaluated date
-
-      - name: Open Pull Request (Using peter-evans)
+      - name: Open pull request
         uses: peter-evans/create-pull-request@v3
         with:
           title: "Daily Contribution"
           commit-message: "Daily contribution"
-          branch: daily-contribution-$(date +%Y%m%d)
+          branch: daily-contribution
           base: main
           body: "This pull request was created automatically by a GitHub Actions workflow to make a daily contribution."
-          token: ${{ secrets.GITHUB_TOKEN }}
-        # Citation: This action is used for creating pull requests automatically.
-        # Source: https://github.com/peter-evans/create-pull-request
+          token: ${{ secrets.GITHUB_TOKEN }}  # Authentication token
