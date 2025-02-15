@@ -28,7 +28,7 @@ jobs:
         # Randomizes delay only if scheduled; runs instantly if manually triggered
 
       - name: Wait Random Time
-        run: sleep $SLEEP_TIME
+        run: sleep 15
         # Waits for the randomly chosen number of seconds
         # Ensures the script runs at a different time every day
 
