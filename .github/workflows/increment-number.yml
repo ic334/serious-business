@@ -4,6 +4,13 @@ on:
   schedule:
     - cron: '0 0 * * *'  # This schedules the job to start at midnight (UTC) every day
   workflow_dispatch:  # Allows manual triggering from GitHub Actions
+  push:
+    branches:
+      - main  # Ensures that it only triggers on push to the 'main' branch
+    paths-ignore:
+      - '.github/workflows/update-file.yml'  # Prevents triggering on its own changes
+
+jobs:
 
 jobs:
   update-file:
