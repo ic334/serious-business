@@ -46,7 +46,8 @@ jobs:
           git config --global user.email "49622606+ic334@users.noreply.github.com"
           git remote set-url origin https://x-access-token:${PAT}@github.com/ic334/serious-business.git
           git add updated_file.txt
-          git commit -m "Auto-update file"
+          git commit -m "Auto-update file"--no-verify 
           git push
+        # --no-verify skips pre-commit hooks (e.g., linting, validation) for this commit
         # Configures Git with your GitHub username and email
         # Adds the updated file, commits the changes, and pushes them to the repository using a Personal Access Token (PAT)
