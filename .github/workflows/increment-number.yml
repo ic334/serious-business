@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Fetch the full commit history
 
@@ -21,26 +21,10 @@ jobs:
           echo "Daily Contribution on $(date)" >> daily_contribution.txt
 
 
-      - name: Commit changes
-        uses: EndBug/add-and-commit@v7
-        with:
-          author_name: "Isaac Cervantes"
-          author_email: "${GH_EMAIL}"
-          message: "Daily contribution"
-          add: "daily_contribution.txt" 
-
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          branch: daily-contribution
-          github_token: ${{ secrets.GITHUB_TOKEN }}  # Use your GitHub token for authentication
-
-      - name: Open pull request
-        uses: peter-evans/create-pull-request@v3
-        with:
-          title: "Daily Contribution"
-          commit-message: "Daily contribution"
-          branch: daily-contribution
-          base: main
-          body: "This pull request was created automatically by a GitHub Actions workflow to make a daily contribution."
-          token: ${{ secrets.GITHUB_TOKEN }}  # Authentication token
+      - name: Commit and push
+        run: |
+          git config --global user.name "ic334"
+          git config --global user.email "${{ secrets.GH_EMAIL }}"
+          git add .
+          git commit -m "Automated daily update"
+          git push
